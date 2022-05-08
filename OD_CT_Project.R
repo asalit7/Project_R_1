@@ -50,5 +50,8 @@ df[, "Year"] = format(df$Date, '%Y')
 df %>% select(Heroin:Hydromorphone, Year) %>% filter(!is.na(Year))%>% group_by(Year) %>% summarise(total = n()) %>%
   ggplot(aes(x=Year, y=total, group=1)) + geom_line() + geom_point()
 
+# Create a density graph comparing deaths of Sex against Age
+df %>% select(Age, Sex) %>% filter(Sex == 'Male'|Sex == 'Female') %>% group_by(Sex) %>%
+  ggplot(aes(x=Age,color=Sex)) + geom_density()
 
 
