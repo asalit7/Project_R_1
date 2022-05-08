@@ -35,12 +35,20 @@ df %>% filter(AnyOpioid == "Y",!Race == "" & !Race == "Unknown") %>% group_by(Ra
   labs(x = "Race", y = "Count of Opioid Present") + ggtitle("Opioids Present Within Race")
 
 # Setting the individual drug columns from "Y" to 1 if present and 0 if not
-drugs = df %>% select(Heroin:Other) %>% colnames()
+drugs = df %>% select(Heroin:Hydromorphone) %>% colnames()
 for (i in drugs){
   df[[i]] = ifelse(df[[i]] == "Y",1,0)
 }
 
 # Setting date column to date format
 df$Date <- as.Date(df$Date,format="%m/%d/%Y")
+
+# Set up Year as a column
+df[, "Year"] = format(df$Date, '%Y')
+
+# Created a line graph of deaths over the years 
+df %>% select(Heroin:Hydromorphone, Year) %>% filter(!is.na(Year))%>% group_by(Year) %>% summarise(total = n()) %>%
+  ggplot(aes(x=Year, y=total, group=1)) + geom_line() + geom_point()
+
 
 
