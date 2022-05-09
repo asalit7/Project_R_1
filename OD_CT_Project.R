@@ -19,9 +19,6 @@ ggplot(head(city, 15), aes(x = reorder(ResidenceCity, total), y = total)) +
 age <- df  %>% group_by(Age) %>% summarise(total = n())
 ggplot(na.omit(age), aes(x = Age, y=total)) + geom_point() + labs(y= 'Total Deaths') + ggtitle('Death Count By Age')
 
-age <- df  %>% group_by(Age) %>% summarise(total = n())
-ggplot(na.omit(age), aes(x = Age)) + geom_density(aes(y=total)) + labs(y= 'Total Deaths') + ggtitle('Death Count By Age')
-
 # creating variable of deaths by gender and graphing it into a bar chart
 gender <- df %>% filter(Sex == "Male" | Sex == "Female") %>% group_by(Sex) %>% summarise(total = n())
 ggplot(gender, aes(x = reorder(Sex, total), y=total)) + geom_bar(stat="identity",fill ="blue") + labs(x="Gender", Y="Total Deaths")+
@@ -52,6 +49,11 @@ df %>% select(Heroin:Hydromorphone, Year) %>% filter(!is.na(Year))%>% group_by(Y
 
 # Create a density graph comparing deaths of Sex against Age
 df %>% select(Age, Sex) %>% filter(Sex == 'Male'|Sex == 'Female') %>% group_by(Sex) %>%
-  ggplot(aes(x=Age,color=Sex)) + geom_density()
+  ggplot(aes(x=Age,color=Sex)) + geom_density() + ggtitle("Comparing Deaths of Age vs Gender")
 
+# Create a graph viewing the total deaths by drug
+df %>% select(Heroin:Hydromorphone) %>% summarise_all(sum) %>% 
+  pivot_longer(cols = Heroin:Hydromorphone, names_to = "Drug", values_to = "Total")%>%
+  ggplot(aes(x=reorder(Drug,Total), y = Total)) + geom_bar(stat='identity',fill='orange') + coord_flip() + 
+  labs(x="Drug Name", y="Total Deaths") + ggtitle("Total Deaths by Drug")
 
